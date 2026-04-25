@@ -7,27 +7,33 @@ pipeline {
 
     stages {
 
-        stage('Clone Repo') {
+        stage('Clone') {
             steps {
                 git 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
-        stage('Load Image into kind') {
+        stage('Load to kind') {
             steps {
                 sh 'kind load docker-image $IMAGE_NAME --name devops-cluster'
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to K8s') {
             steps {
                 sh 'kubectl apply -f k8s/'
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                sh 'kubectl get pods'
             }
         }
     }
